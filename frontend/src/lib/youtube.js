@@ -1,9 +1,14 @@
 // openGym Offline (lib/build-caps.js) has no network: no player, no search, no links to embed.
 import { offlineBuild } from './build-caps.js'
 
+// A build made with VITE_NO_YOUTUBE=1 has no YouTube at all, like openGym Offline: no "Watch on
+// YouTube" search and no player for links pasted into notes. Set in frontend/.env.development
+// and .env.production of this fork; tests run without it.
+const noYoutube = () => import.meta.env.VITE_NO_YOUTUBE === '1' || offlineBuild()
+
 // Only a video ID crosses into the iframe URL; never embed an arbitrary exercise link.
 export function youtubeId(value) {
-  if (offlineBuild()) return null
+  if (noYoutube()) return null
   try {
     const url = new URL(/^https?:\/\//i.test(value) ? value : 'https://' + value)
     if (!['https:', 'http:'].includes(url.protocol) || url.username || url.password || url.port) return null
@@ -28,7 +33,7 @@ export function youtubeLinks(notes = '') {
 // address is only built here, and only opened after a tap (in the YouTube app where the phone
 // has it). Null when there is no name to search for.
 export function youtubeSearchUrl(ex) {
-  if (!ex || ex.missing || offlineBuild()) return null
+  if (!ex || ex.missing || noYoutube()) return null
   const name = String(ex?.n || '').replace(/\s+/g, ' ').trim().slice(0, 100)
   if (!name) return null
   return 'https://www.youtube.com/results?search_query=' + encodeURIComponent(name + ' form').replace(/%20/g, '+')

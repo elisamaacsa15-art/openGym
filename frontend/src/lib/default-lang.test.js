@@ -1,7 +1,7 @@
 // #303: an instance-wide default language, and the browser's, apply only to a copy nobody has
 // picked a language for — never to an existing profile, whose `lang: 'en'` may be a choice.
 import { describe, expect, it } from 'vitest'
-import { matchLocale, autoLang } from './default-lang.js'
+import { matchLocale, autoLang, effectiveLang } from './default-lang.js'
 
 describe('matchLocale', () => {
   it('matches the full tag first, in any case or separator', () => {
@@ -42,5 +42,28 @@ describe('autoLang', () => {
     expect(autoLang(fresh, {}, ['nl-NL', 'de-DE'])).toBe('de')
     expect(autoLang(fresh, {}, ['nl-NL'])).toBe('en')
     expect(autoLang(fresh, { default_lang: 'xx' }, ['fr-FR'])).toBe('fr')
+  })
+})
+
+// A static build (no api, so no /api/config) carries its default as VITE_DEFAULT_LANG.
+describe('effectiveLang with a build default', () => {
+  const fresh = { lang: 'en', langAuto: true }
+  const clearCache = () => { try { localStorage.removeItem('gym_default_lang') } catch { /* no storage */ } }
+  it('uses the build default for a fresh copy before any config is seen, over the browser', () => {
+    clearCache()
+    expect(effectiveLang(fresh, null, ['en-US'], 'pt-BR')).toBe('pt-BR')
+  })
+  it('keeps the stored language when there is no build default and no config yet', () => {
+    clearCache()
+    expect(effectiveLang(fresh, null, ['de-DE'], '')).toBe('en')
+  })
+  it('lets a server config win over the build default', () => {
+    clearCache()
+    expect(effectiveLang(fresh, { default_lang: 'es' }, ['en-US'], 'pt-BR')).toBe('es')
+  })
+  it('never changes a copy that picked its language', () => {
+    clearCache()
+    expect(effectiveLang({ lang: 'de' }, null, ['en-US'], 'pt-BR')).toBe('de')
+    expect(effectiveLang({ lang: 'en', langAuto: false }, null, ['en-US'], 'pt-BR')).toBe('en')
   })
 })

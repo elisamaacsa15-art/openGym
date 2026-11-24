@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { youtubeId, youtubeLinks } from './youtube.js'
 
 describe('YouTube exercise links', () => {
@@ -10,5 +10,23 @@ describe('YouTube exercise links', () => {
   })
   it('extracts and deduplicates video references without treating other links as embeds', () => {
     expect(youtubeLinks('Squat: https://www.youtube.com/watch?v=99QhMQoxmOk; same: https://youtu.be/99QhMQoxmOk\nOther: https://example.org')).toEqual(['https://youtu.be/99QhMQoxmOk'])
+  })
+})
+
+// This fork builds with VITE_NO_YOUTUBE=1: no search link and no player at all.
+describe('a build without YouTube (VITE_NO_YOUTUBE=1)', () => {
+  it('offers no search and embeds no pasted link', async () => {
+    vi.stubEnv('VITE_NO_YOUTUBE', '1')
+    try {
+      const y = await import('./youtube.js')
+      expect(y.youtubeSearchUrl({ n: 'Bench Press' })).toBe(null)
+      expect(y.youtubeId('https://youtu.be/dQw4w9WgXcQ')).toBe(null)
+      expect(y.youtubeLinks('see https://youtu.be/dQw4w9WgXcQ')).toEqual([])
+    } finally { vi.unstubAllEnvs() }
+  })
+  it('keeps both when the flag is not set', async () => {
+    const y = await import('./youtube.js')
+    expect(y.youtubeSearchUrl({ n: 'Bench Press' })).toContain('youtube.com/results')
+    expect(y.youtubeId('https://youtu.be/dQw4w9WgXcQ')).toBe('dQw4w9WgXcQ')
   })
 })

@@ -51,19 +51,26 @@ function cachedDefaultLang() {
   try { return localStorage.getItem(CACHE_KEY) } catch { return null }
 }
 
+// A build served with no api behind it (a static host such as GitHub Pages) never gets
+// /api/config, so it can carry its default in the bundle instead: VITE_DEFAULT_LANG=pt-BR at
+// build time. It only stands in while this device has seen no config; a server's DEFAULT_LANG,
+// once seen, still wins, and a copy that picked a language in Settings is never touched.
+const BUILD_DEFAULT_LANG = (import.meta.env && import.meta.env.VITE_DEFAULT_LANG) || ''
+
 /**
  * The language to show this copy in, on this device: its own `lang`, or for a copy that never
  * picked one, what autoLang says. Before the config is in, the default this device last saw
- * stands in for it; with none seen yet the copy's stored language is used unchanged.
+ * stands in for it, then the build's default; with neither the copy's stored language is used.
  */
-export function effectiveLang(S, config, navLangs = browserLangs()) {
+export function effectiveLang(S, config, navLangs = browserLangs(), buildDefault = BUILD_DEFAULT_LANG) {
   const own = (S && typeof S.lang === 'string' && S.lang) || 'en'
   if (!S || S.langAuto !== true) return own
   let cfg = config
   if (!cfg) {
     const seen = cachedDefaultLang()
-    if (seen === null) return own
-    cfg = { default_lang: seen }
+    if (seen !== null) cfg = { default_lang: seen }
+    else if (buildDefault) cfg = { default_lang: buildDefault }
+    else return own
   }
   return autoLang(S, cfg, navLangs) || own
 }

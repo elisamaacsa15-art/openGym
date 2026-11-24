@@ -33,6 +33,13 @@ applyDisplay()
 // Settings → About → Network log (lib/net-log.js): from the very first request on.
 if (MOBILE) startNetLog()
 
+// A build served with no api behind it (VITE_NO_SERVER=1, this fork's GitHub Pages deploy) has
+// nothing to sign in to, so it opens straight into the profile on this device, the way
+// "Continue without account" does. Connecting a server later from Settings still works.
+if (import.meta.env.VITE_NO_SERVER === '1') {
+  try { if (!localStorage.getItem('gym_guest')) localStorage.setItem('gym_guest', '1') } catch { /* storage off */ }
+}
+
 const render = () => createRoot(document.getElementById('root')).render(
   <StrictMode><App /></StrictMode>
 )
