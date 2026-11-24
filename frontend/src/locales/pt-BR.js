@@ -2,6 +2,7 @@
 // Tests fingerprint every deliberately inherited entry so upstream changes require review.
 // Some byte-identical overrides intentionally pin wording that must not drift with pt-PT.
 import pt from './pt.js'
+import { QUESTIONNAIRE_PT } from '../lib/fork-questionnaire-pt.js'
 
 export const PT_BR_OVERRIDES = {
   // --- Settings first screen in groups (#1105); "Watches" (Relógios) is inherited ---
@@ -4326,6 +4327,8 @@ export const PT_BR_OVERRIDES = {
   "iOS ends it after 8 hours, and a swipe removes it. It comes back with your next set.": "O iOS encerra depois de 8 horas, e um deslize remove. Volta com sua próxima série.",
   "Android Settings, Apps, openGym, Notifications.": "Configurações do Android, Apps, openGym, Notificações.",
   "Follows the main page. Switch this on to pick the details and buttons for this type yourself.": "Segue a página principal. Ative isto para escolher você mesmo os detalhes e os botões deste tipo.",
+  // --- fork: personal questionnaire, Portuguese only (lib/fork-questionnaire-pt.js) ---
+  ...QUESTIONNAIRE_PT,
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

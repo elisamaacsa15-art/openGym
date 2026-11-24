@@ -31,6 +31,12 @@ const italianOnlyKeys = [
   'Your training data on the server could not be read. Contact the instance admin.'
 ]
 
+// Fork: the personal questionnaire's strings are Portuguese only (pt and pt-BR); the other
+// languages show the English source. Kept out of the parity union like the Italian-only keys.
+// The tests run this script against stand-in packs in a temporary folder, without the module.
+const portugueseOnlyKeys = await import(pathToFileURL(join(localesDir, '..', 'lib', 'fork-questionnaire-pt.js')).href)
+  .then(m => m.QUESTIONNAIRE_PT_KEYS || [], () => [])
+const PT_ONLY_PACKS = ['pt', 'pt-BR']
 if (!files.length) {
   console.error(`No locale files found in ${localesDir}`)
   process.exit(1)
@@ -49,7 +55,7 @@ for (const file of files) {
 // How many locales carry each key — 1 means the key was added to a single file only,
 // which is the usual shape of the bug and worth naming separately from plain gaps.
 const seen = new Map()
-for (const dict of locales.values()) for (const k of Object.keys(dict)) if (!italianOnlyKeys.includes(k)) seen.set(k, (seen.get(k) || 0) + 1)
+for (const dict of locales.values()) for (const k of Object.keys(dict)) if (!italianOnlyKeys.includes(k) && !portugueseOnlyKeys.includes(k)) seen.set(k, (seen.get(k) || 0) + 1)
 const union = [...seen.keys()]
 
 // t('…{0}…', x) substitutes by index, so a translation that loses a {0} drops the number out of
@@ -95,6 +101,12 @@ if (duplicates.length) {
   for (const d of duplicates) console.error(`duplicate key, ${d}`)
 }
 if (locales.has('it')) {
+  for (const key of portugueseOnlyKeys) {
+    for (const lang of PT_ONLY_PACKS) if (!locales.get(lang)?.[key]) {
+      failed = true
+      console.error(`${lang}.js: missing Portuguese-only questionnaire string: ${JSON.stringify(key)}`)
+    }
+  }
   for (const key of italianOnlyKeys) {
     if (!locales.get('it')?.[key]) {
       failed = true

@@ -24,6 +24,9 @@ import { RecapHomeCard } from '../components/Recap.jsx'
 import { scheduleModeOf } from '../lib/rotation.js'
 import { useConnectionTrouble } from '../components/SyncBanner.jsx'
 import { Button } from '../components/ui.jsx'
+
+// Fork: whether the personal questionnaire built a plan on this device (views/Questionnaire.jsx).
+const questionnaireDone = () => { try { return !!localStorage.getItem('gym_questionnaire_v1') } catch { return false } }
 import { tappable } from '../lib/use-sheet-keyboard.js'
 import { glyphOf } from '../lib/glyphs.js'
 import { dayNoteOf } from '../lib/day-notes.js'
@@ -250,8 +253,19 @@ export default function Home() {
     {!S.routines.length && !S.active && (
       <div className="card">
         <CardHead icon="calendar" title={t('Welcome!')} sub={t('Set up your weekly routine to get going, or grab a ready-made starter plan.')} />
-        <Button variant="primary" icon="clipboard" onClick={starterPlanSheet}>{t('Load starter plan')}</Button>
+        {/* Fork: a plan built from a few questions about you (views/Questionnaire.jsx). */}
+        <Button variant="primary" icon="sparkles" onClick={() => nav('/avaliacao')}>{t('Build my personal plan')}</Button>
+        <div style={{ height: 8 }} /><Button icon="clipboard" onClick={starterPlanSheet}>{t('Load starter plan')}</Button>
         <div style={{ height: 8 }} /><Button onClick={() => nav('/plan')}>{t('Build my own plan')}</Button>
+      </div>
+    )}
+
+    {/* Fork: once the questionnaire built a plan, a way back to it to redo it (every 8 to 12 weeks). */}
+    {S.routines.length > 0 && !S.active && questionnaireDone() && (
+      <div className="card tap-host">
+        <CardHead icon="sparkles" tint="var(--acc)" eyebrow={t('Your personal plan')} title={t('Redo the questionnaire')}
+          sub={t('Every 8 to 12 weeks, or when your goal or days change.')} open={{ onClick: () => nav('/avaliacao') }}
+          action={<Icon name="chevronRight" className="chev" />} />
       </div>
     )}
 

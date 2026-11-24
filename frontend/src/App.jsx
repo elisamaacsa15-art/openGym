@@ -96,6 +96,8 @@ const CoachChat = lazyView(() => import('./views/CoachChat.jsx'))
 const Connect = lazyView(() => import('./views/Connect.jsx'))
 const Measurements = lazyView(() => import('./views/Measurements.jsx'))
 const CoachIntake = lazyView(() => import('./views/CoachIntake.jsx'))
+// Fork: the personal questionnaire, no server and no AI needed (views/Questionnaire.jsx).
+const Questionnaire = lazyView(() => import('./views/Questionnaire.jsx'))
 const CoachSetup = lazyView(() => import('./views/CoachSetup.jsx'))
 const Assistants = lazyView(() => import('./views/Assistants.jsx'))
 const StructuralBalance = lazyView(() => import('./views/StructuralBalance.jsx'))
@@ -401,6 +403,7 @@ function Shell() {
           route falls through to the catch-all redirect below. The data stays where it is. */}
       {isOn(S, 'checkin') && <Route path="/checkin" element={<CheckIn />} />}
       <Route path="/plan" element={<Plan />} />
+      <Route path="/avaliacao" element={<Questionnaire />} />
       <Route path="/plan/r/:id" element={<RoutineEdit />} />
       <Route path="/plan/programmes" element={<Programmes />} />
       <Route path="/plan/prog/:id" element={<ProgrammeEdit />} />

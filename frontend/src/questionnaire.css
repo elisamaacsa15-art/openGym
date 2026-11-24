@@ -1,0 +1,29 @@
+/* Fork: the personal questionnaire (views/Questionnaire.jsx). The screens reuse coach.css .ob-*;
+   these are only its own pieces, drawn with the app's variables so themes and accents follow. */
+.q-fields { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 8px }
+.q-field { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--label-2) }
+.q-field input { width: 100%; min-width: 0; height: 48px; border-radius: 12px; border: 1px solid var(--sep); background: var(--surface-2); color: inherit; text-align: center; font-size: 17px; font-weight: 600 }
+.q-map { margin: 6px auto 4px; max-width: 360px }
+.q-group { margin-top: 6px }
+.q-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px }
+.q-ex { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 8px; border-radius: 14px; border: 1px solid var(--sep); background: var(--surface-2); color: inherit; text-align: left }
+.q-ex .thumb { width: 100%; height: auto; aspect-ratio: 1; border-radius: 10px }
+.q-ex-n { font-size: 13px; line-height: 1.3 }
+.q-ex.off { opacity: .45; border-color: var(--red) }
+.q-ex-x { position: absolute; top: 12px; right: 12px; width: 26px; height: 26px; border-radius: 50%; background: var(--red); color: #fff; display: grid; place-items: center }
+.q-ex-x svg { width: 15px; height: 15px }
+.q-day { margin-top: 12px }
+.q-day-h { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 8px }
+.q-row { display: flex; align-items: center; gap: 10px; width: 100%; padding: 6px 0; background: none; border: 0; color: inherit; text-align: left }
+.q-row .thumb { width: 48px; height: 48px; flex: none; border-radius: 10px }
+.q-row-n { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px }
+.q-row-wrap + .q-row-wrap { border-top: 1px solid var(--sep) }
+.q-swap { padding: 4px 0 8px 58px; display: flex; flex-direction: column }
+.q-opt { padding: 4px 0 }
+.q-opt .thumb { width: 38px; height: 38px }
+.q-why { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 8px; line-height: 1.45 }
+.q-vol { display: grid; grid-template-columns: 110px 1fr 56px; align-items: center; gap: 10px; font-size: 14px; padding: 4px 0 }
+.q-vol > span:last-child { text-align: right; font-variant-numeric: tabular-nums }
+.q-bar { height: 8px; border-radius: 99px; background: var(--sep); overflow: hidden }
+.q-bar i { display: block; height: 100%; background: var(--label-3); border-radius: 99px }
+.q-bar i.pri { background: var(--acc) }

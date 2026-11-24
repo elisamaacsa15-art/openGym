@@ -1,4 +1,6 @@
 // Portuguese UI strings. Keys are the English source strings (see lib/i18n.js).
+import { QUESTIONNAIRE_PT } from '../lib/fork-questionnaire-pt.js'
+
 export default {
   // --- Settings first screen in groups (#1105) ---
   "Watches": "Relógios",
@@ -5897,4 +5899,6 @@ export default {
   "Preview on": "Pré-visualizar em",
   // 1.4.5 UX round, P2: timed holds in the finish summary (next hold is shorter)
   "shorter": "um pouco mais curto",
+  // --- fork: personal questionnaire, Portuguese only (lib/fork-questionnaire-pt.js) ---
+  ...QUESTIONNAIRE_PT,
 }
