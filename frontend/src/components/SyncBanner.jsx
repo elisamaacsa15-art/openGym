@@ -44,7 +44,9 @@ function useConnection() {
   const view = connectionView(sync, { online })
   // Signed out on the web, the sign-in screen is the whole app: it hears only that the server
   // ended the session, and that the changes are still here.
-  const show = !DEMO && !onboarding && !!view?.banner && (!!user || guest || status === 'auth') && (status !== 'pending' || waited)
+  // A build with no server (VITE_NO_SERVER=1, this fork's Pages deploy) has nothing to sign in to
+  // or sync with, so, like the demo, it shows no banner offering it.
+  const show = !DEMO && import.meta.env.VITE_NO_SERVER !== '1' && !onboarding && !!view?.banner && (!!user || guest || status === 'auth') && (status !== 'pending' || waited)
   return { view, show, user, status }
 }
 
